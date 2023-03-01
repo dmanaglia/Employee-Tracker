@@ -57,5 +57,61 @@ async function updateEmployeeRole(){
     });
 }
 
+async function updateEmployeeManager(){
+    let managerList = ['None'];
+    let employeeList = [];
+    let db = mysql.createConnection(
+        {
+          host: 'localhost',
+          user: 'root',
+          password: 'dannymanaglia',
+          database: 'employees_db'
+        }
+    );
+    await db.promise().query(`SELECT first_name, last_name FROM employee`)
+    .then(([rows,fields]) => {
+        for(employee of rows){
+            employeeList.push(employee.first_name + ' ' + employee.last_name);
+            managerList.push(employee.first_name + ' ' + employee.last_name);
+        }
+    });
+    await inquirer
+    .prompt([
+        {
+            type: 'list',
+            name: 'employee_name',
+            message: `Which employee's manager do you want to update?`,
+            choices: employeeList
+        },
+        {   
+            //create a check to ensure an employee's manager cannot be themseleves?
+            type: 'list',
+            name: 'manager_name',
+            message: 'Which employee would you like to assign as manager?',
+            choices: managerList
+        }
+    ])
+    .then(async (answer) => {
+        let manager_id = null;
+        if(answer.manager_name !== 'None'){
+            let manager_names = answer.manager_name.split(' ');
+            await db.promise().query(`SELECT id FROM employee WHERE first_name='${manager_names[0]}' AND last_name='${manager_names[1]}'`)
+            .then(([rows,fields]) => {
+                manager_id = rows[0].id;
+            });
+        }
+        let employee_names = answer.employee_name.split(' ');
+        return db.promise().query(`UPDATE employee SET manager_id = ${manager_id} WHERE first_name='${employee_names[0]}' AND last_name='${employee_names[1]}'`)
+        .then(() => {
+            console.log(`Updated ${answer.employee_name}'s manager to ${answer.manager_name}`);
+        })
+        .then(() => {
+            db.end();
+        });
+    });
+}
 
-module.exports = updateEmployeeRole;
+module.exports = {  
+    updateEmployeeRole, 
+    updateEmployeeManager
+};

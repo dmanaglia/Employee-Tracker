@@ -31,6 +31,14 @@ console.log(`Added ${?} ${?} to the database`);
 
 
 
+SELECT
+    SUM(role.salary) AS utilized_budget
+FROM role
+JOIN department ON role.department_id = department.id
+JOIN employee ON role.id = employee.role_id
+LEFT JOIN employee m ON m.id = employee.manager_id;
+
+
 
 
 --self join for reference

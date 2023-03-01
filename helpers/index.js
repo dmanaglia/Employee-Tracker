@@ -1,6 +1,26 @@
-const {viewDepartments, viewRoles, viewEmployees} = require('./printData');
-const {addDepartment, addRole, addEmployee} = require('./addData');
-const updateEmployeeRole = require('./updateData');
+const { 
+    viewDepartments, 
+    viewRoles, 
+    viewEmployees} = require('./printData');
+
+const { 
+    addDepartment, 
+    addRole, 
+    addEmployee} = require('./addData');
+
+const { 
+    updateEmployeeRole,
+    updateEmployeeManager} = require('./updateData');
+
+const {
+    deleteDepartment,
+    deleteRole,
+    deleteEmployee} = require('./deleteData');
+
+const {
+    budgetByDepartment, 
+    viewEmployeeByManager, 
+    viewEmployeeByDepartment} = require('./filterData');
 
 const allHelpers = {
     viewDepartments,
@@ -9,7 +29,14 @@ const allHelpers = {
     addDepartment,
     addRole,
     addEmployee,
-    updateEmployeeRole
+    updateEmployeeRole,
+    updateEmployeeManager,
+    deleteDepartment,
+    deleteRole,
+    deleteEmployee,
+    viewEmployeeByManager,
+    viewEmployeeByDepartment,
+    budgetByDepartment
 }
 
 module.exports = allHelpers;

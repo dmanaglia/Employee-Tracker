@@ -61,4 +61,8 @@ function viewEmployees(){
     });
 }
 
-module.exports = {viewDepartments, viewRoles, viewEmployees}
+module.exports = {  
+    viewDepartments, 
+    viewRoles, 
+    viewEmployees
+};
