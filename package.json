@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/dmanaglia/Employee-Tracker#readme",
   "dependencies": {
+    "cfonts": "^3.1.1",
     "console.table": "^0.10.0",
     "inquirer": "^8.2.4",
     "mysql2": "^3.1.2"
