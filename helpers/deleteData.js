@@ -50,8 +50,8 @@ async function deleteRole(){
     );
     await db.promise().query(`SELECT title FROM role`)
     .then(([rows,fields]) => {
-        for(dep of rows){
-            roleList.push(dep.name);
+        for(role of rows){
+            roleList.push(role.title);
         }
     });
     await inquirer
