@@ -33,6 +33,7 @@ async function deleteDepartment(){
                 console.log();
                 console.log(`Delete has been cancelled`);
             }
+            console.log();
         });
     });
 }
@@ -70,6 +71,7 @@ async function deleteRole(){
                 console.log();
                 console.log(`Delete has been cancelled`);
             }
+            console.log();
         });
     });
 }
@@ -107,6 +109,7 @@ async function deleteEmployee(){
                 console.log();
                 console.log(`Delete has been cancelled`);
             }
+            console.log();
         });
     });
 }

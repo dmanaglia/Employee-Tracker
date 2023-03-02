@@ -96,7 +96,6 @@ function start(){
                 start();
                 break;
             default:
-                console.log("Bye");
                 break;
         }
     })
