@@ -10,7 +10,9 @@ const {
 
 const { 
     updateEmployeeRole,
-    updateEmployeeManager} = require('./updateData');
+    updateEmployeeManager,
+    updateRoleDepartment,
+    updateRoleSalary} = require('./updateData');
 
 const {
     deleteDepartment,
@@ -31,12 +33,14 @@ const allHelpers = {
     addEmployee,
     updateEmployeeRole,
     updateEmployeeManager,
+    updateRoleDepartment,
+    updateRoleSalary,
     deleteDepartment,
     deleteRole,
     deleteEmployee,
+    budgetByDepartment,
     viewEmployeeByManager,
-    viewEmployeeByDepartment,
-    budgetByDepartment
+    viewEmployeeByDepartment
 }
 
 module.exports = allHelpers;
