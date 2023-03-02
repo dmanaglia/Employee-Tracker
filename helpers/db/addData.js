@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 const {getDepartmentList, getDepartmentId, getRoleList, getEmployeeList, getRoleId, getEmployeeId} = require('./myData');
 
 async function addDepartment(){
-    await inquirer.prompt([
+    let answer = await inquirer.prompt([
         {
             type: 'input',
             name: 'dep_name',
@@ -17,21 +17,16 @@ async function addDepartment(){
             }
         }
     ])
-    .then(async (answer) => {
-        let db = mysql.createConnection({ host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-        await db.promise().query(`INSERT INTO department(name) VALUES ('${answer.dep_name}')`)
-        .then(() => {
-            db.end();
-            console.log();
-            console.log(`Added ${answer.dep_name} to the database`);
-        });
-    });
+    let db = mysql.createConnection({ host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
+    await db.promise().query(`INSERT INTO department(name) VALUES ('${answer.dep_name.trim()}')`)
+    db.end();
+    console.log(`\nAdded ${answer.dep_name.trim()} to the database\n`);
 }
 
 async function addRole(){
     let departmentList = await getDepartmentList();
     departmentList.splice(0, 0, 'None');
-    await inquirer.prompt([
+    let answer = await inquirer.prompt([
         {
             type: 'input',
             name: 'role_title',
@@ -65,27 +60,22 @@ async function addRole(){
             choices: departmentList
         }
     ])
-    .then(async (answer) => {
-        let department_id = await getDepartmentId(answer.department_name)
-        const db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-        await db.promise().query(`INSERT INTO role(title, salary, department_id) VALUES ('${answer.role_title}', ${answer.salary}, ${department_id})`)
-        .then(() => {
-            db.end();
-            console.log();
-            if(department_id){
-                console.log(`Added ${answer.role_title} to the ${answer.department_name} department`);
-            } else {
-                console.log(`Added ${answer.role_title} to the database`);
-            }
-        });
-    });
+    let department_id = await getDepartmentId(answer.department_name)
+    let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
+    await db.promise().query(`INSERT INTO role(title, salary, department_id) VALUES ('${answer.role_title.trim()}', ${answer.salary}, ${department_id})`)
+    db.end();
+    if(department_id){
+        console.log(`\nAdded ${answer.role_title.trim()} to the ${answer.department_name} department\n`);
+    } else {
+        console.log(`\nAdded ${answer.role_title.trim()} to the database\n`);
+    }
 }
 
 async function addEmployee(){
     let roleList = await getRoleList();
     let potentialManagerList = await getEmployeeList();
     potentialManagerList.splice(0, 0, 'None');
-    await inquirer.prompt([
+    let answer = await inquirer.prompt([
         {
             type: 'input',
             name: 'firstName',
@@ -124,17 +114,12 @@ async function addEmployee(){
         }
 
     ])
-    .then(async (answer) => {
-        let role_id = await getRoleId(answer.role_title);
-        let manager_id = await getEmployeeId(answer.manager_name);
-        let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-        await db.promise().query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES ('${answer.firstName}', '${answer.lastName}', ${role_id}, ${manager_id})`)
-        .then(() => {
-            db.end();
-            console.log();
-            console.log(`Added ${answer.firstName} ${answer.lastName} to the database`);
-        });
-    });
+    let role_id = await getRoleId(answer.role_title);
+    let manager_id = await getEmployeeId(answer.manager_name);
+    let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
+    await db.promise().query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES ('${answer.firstName.trim()}', '${answer.lastName.trim()}', ${role_id}, ${manager_id})`)
+    db.end();
+    console.log(`\nAdded ${answer.firstName.trim()} ${answer.lastName.trim()} to the database\n`);
 }
 
 module.exports = {
