@@ -1,6 +1,6 @@
-const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const {getEmployeeList, getRoleList, getRoleId, getEmployeeId, getDepartmentList, getDepartmentId} = require('./myData');
+const alterData = require('./sql/alterData');
+const {getEmployeeList, getRoleList, getRoleId, getEmployeeId, getDepartmentList, getDepartmentId} = require('./sql/getData');
 
 async function updateEmployeeRole(){
     let employeeList = await getEmployeeList();
@@ -20,11 +20,7 @@ async function updateEmployeeRole(){
         }
 
     ])
-    let role_id = await getRoleId(answer.role_title);
-    let employee_names = answer.employee_name.split(' ');
-    let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-    await db.promise().query(`UPDATE employee SET role_id = ${role_id} WHERE first_name='${employee_names[0]}' AND last_name='${employee_names[1]}'`)
-    db.end();
+    await alterData.updateEmployeeRole(answer.employee_name, await getRoleId(answer.role_title))
     console.log(`\nUpdated ${answer.employee_name}'s role to ${answer.role_title}\n`);
 }
 
@@ -47,11 +43,7 @@ async function updateEmployeeManager(){
             choices: managerList
         }
     ])
-    let manager_id = await getEmployeeId(answer.manager_name);
-    let employee_names = answer.employee_name.split(' ');
-    let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-    await db.promise().query(`UPDATE employee SET manager_id = ${manager_id} WHERE first_name='${employee_names[0]}' AND last_name='${employee_names[1]}'`)
-    db.end();
+    await alterData.updateEmployeeManager(answer.employee_name, await getEmployeeId(answer.manager_name))
     console.log(`\nUpdated ${answer.employee_name}'s manager to ${answer.manager_name}\n`);
 }
 
@@ -73,10 +65,7 @@ async function updateRoleDepartment(){
             choices: departmentList
         }
     ])
-    let department_id = await getDepartmentId(answer.department_name);
-    let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-    await db.promise().query(`UPDATE role SET department_id = ${department_id} WHERE title = '${answer.role_title}'`)
-    db.end();
+    await alterData.updateRoleDepartment(answer.role_title, await getDepartmentId(answer.department_name));
     console.log(`\nUpdated ${answer.role_title} department to ${answer.department_name}\n`);
 }
 
@@ -104,9 +93,7 @@ async function updateRoleSalary(){
             }
         }
     ])
-    let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-    await db.promise().query(`UPDATE role SET salary = ${answer.salary} WHERE title = '${answer.role_title}'`)
-    db.end();
+    await alterData.updateRoleSalary(answer.salary, answer.role_title);
     console.log(`\nUpdated ${answer.role_title} salary to $${answer.salary}\n`);
 }
 
