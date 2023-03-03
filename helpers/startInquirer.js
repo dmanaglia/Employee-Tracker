@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const allHelpers = require('./db');
+const allActions = require('./actions');
+const db = require('../config/connection');
 
 function start(){
     inquirer.prompt([
@@ -32,70 +33,71 @@ function start(){
     .then(async (answers) => {
         switch (answers.action) {
             case 'View all departments':
-                await allHelpers.viewDepartments();
+                await allActions.viewDepartments();
                 start();
                 break;
             case 'View all roles':
-                await allHelpers.viewRoles();
+                await allActions.viewRoles();
                 start();
                 break;
             case 'View all employees':
-                await allHelpers.viewEmployees();
+                await allActions.viewEmployees();
                 start();
                 break;
             case 'Add a department':
-                await allHelpers.addDepartment();
+                await allActions.addDepartment();
                 start();
                 break;
             case 'Add a role':
-                await allHelpers.addRole();
+                await allActions.addRole();
                 start();
                 break;
             case 'Add an employee':
-                await allHelpers.addEmployee();
+                await allActions.addEmployee();
                 start();
                 break;
             case 'Update an employee role':
-                await allHelpers.updateEmployeeRole();
+                await allActions.updateEmployeeRole();
                 start();
                 break;
             case 'Update an employee manager':
-                await allHelpers.updateEmployeeManager();
+                await allActions.updateEmployeeManager();
                 start();
                 break;
             case `Update a job's department`:
-                await allHelpers.updateRoleDepartment();
+                await allActions.updateRoleDepartment();
                 start();
                 break;
             case `Update a job's salary`:
-                await allHelpers.updateRoleSalary();
+                await allActions.updateRoleSalary();
                 start();
                 break;
             case 'Delete department':
-                await allHelpers.deleteDepartment();
+                await allActions.deleteDepartment();
                 start();
                 break;
             case 'Delete role':
-                await allHelpers.deleteRole();
+                await allActions.deleteRole();
                 start();
                 break;
             case 'Delete employee':
-                await allHelpers.deleteEmployee();
+                await allActions.deleteEmployee();
                 start();
                 break;
             case 'View employees by manager':
-                await allHelpers.viewEmployeeByManager();
+                await allActions.viewEmployeeByManager();
                 start();
                 break;
             case 'View employees by department':
-                await allHelpers.viewEmployeeByDepartment();
+                await allActions.viewEmployeeByDepartment();
                 start();
                 break;
             case 'Get total utilized budget by department':
-                await allHelpers.budgetByDepartment();
+                await allActions.budgetByDepartment();
                 start();
                 break;
             default:
+                db.end();
                 break;
         }
     })

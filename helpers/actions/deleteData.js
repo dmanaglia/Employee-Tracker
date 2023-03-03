@@ -1,6 +1,7 @@
-const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const {getDepartmentList, getRoleList, getEmployeeList} = require('./myData');
+const alterData = require('./sql/alterData');
+const {getDepartmentList, getRoleList, getEmployeeList} = require('./sql/getData');
+
 
 async function deleteDepartment(){
     let departmentList = await getDepartmentList();
@@ -20,10 +21,8 @@ async function deleteDepartment(){
         }
     ])
     if(confirm.confirm_delete){
-        let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-        await db.promise().query(`DELETE FROM department WHERE name = ('${answer.department_name}')`)
-            db.end();
-            console.log(`\nRemoved the department '${answer.department_name}' from the database\n`);
+        await alterData.deleteDepartment(answer.department_name);
+        console.log(`\nRemoved the department '${answer.department_name}' from the database\n`);
     } else{
         console.log(`\nDelete has been cancelled\n`);
     }
@@ -47,9 +46,7 @@ async function deleteRole(){
         }
     ])
     if(confirm.confirm_delete){
-        let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-        await db.promise().query(`DELETE FROM role WHERE title = ('${answer.role_title}')`)
-        db.end();
+        await alterData.deleteRole(answer.role_title);
         console.log(`\nRemoved the role '${answer.role_title}' from the database\n`);
     } else{
         console.log(`\nDelete has been cancelled\n`);
@@ -74,10 +71,7 @@ async function deleteEmployee(){
         }
     ])
     if(confirm.confirm_delete){
-        let employee_names = answer.employee_name.split(' ');
-        let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-        await db.promise().query(`DELETE FROM employee WHERE first_name='${employee_names[0]}' AND last_name='${employee_names[1]}'`)
-        db.end();
+        await alterData.deleteEmployee(answer.employee_name);
         console.log(`\nRemoved the employee '${answer.employee_name}' from the database\n`);
     } else{
         console.log(`\nDelete has been cancelled\n`);

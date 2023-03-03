@@ -1,12 +1,12 @@
-const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const {getDepartmentList, getDepartmentId, getRoleList, getEmployeeList, getRoleId, getEmployeeId} = require('./myData');
+const alterData = require('./sql/alterData');
+const {getDepartmentList, getDepartmentId, getRoleList, getEmployeeList, getRoleId, getEmployeeId} = require('./sql/getData');
 
 async function addDepartment(){
     let answer = await inquirer.prompt([
         {
             type: 'input',
-            name: 'dep_name',
+            name: 'department_name',
             message: 'What is the name of the department?',
             validate: function(input){
                 if(!input){
@@ -17,10 +17,8 @@ async function addDepartment(){
             }
         }
     ])
-    let db = mysql.createConnection({ host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-    await db.promise().query(`INSERT INTO department(name) VALUES ('${answer.dep_name.trim()}')`)
-    db.end();
-    console.log(`\nAdded ${answer.dep_name.trim()} to the database\n`);
+    await alterData.addDepartment(answer.department_name.trim())
+    console.log(`\nAdded ${answer.department_name.trim()} to the database\n`);
 }
 
 async function addRole(){
@@ -61,9 +59,7 @@ async function addRole(){
         }
     ])
     let department_id = await getDepartmentId(answer.department_name)
-    let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-    await db.promise().query(`INSERT INTO role(title, salary, department_id) VALUES ('${answer.role_title.trim()}', ${answer.salary}, ${department_id})`)
-    db.end();
+    await alterData.addRole(answer.role_title.trim(), answer.salary, department_id);
     if(department_id){
         console.log(`\nAdded ${answer.role_title.trim()} to the ${answer.department_name} department\n`);
     } else {
@@ -116,9 +112,7 @@ async function addEmployee(){
     ])
     let role_id = await getRoleId(answer.role_title);
     let manager_id = await getEmployeeId(answer.manager_name);
-    let db = mysql.createConnection({host: 'localhost', user: 'root', password: 'dannymanaglia', database: 'employees_db'});
-    await db.promise().query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES ('${answer.firstName.trim()}', '${answer.lastName.trim()}', ${role_id}, ${manager_id})`)
-    db.end();
+    await alterData.addEmployee(answer.firstName.trim(), answer.lastName.trim(), role_id, manager_id)
     console.log(`\nAdded ${answer.firstName.trim()} ${answer.lastName.trim()} to the database\n`);
 }
 
